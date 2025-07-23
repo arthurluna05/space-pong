@@ -1,0 +1,113 @@
+[gd_scene load_steps=11 format=3 uid="uid://cdb7to7olqj1q"]
+
+[ext_resource type="Script" uid="uid://bfr8i1vbkjdbu" path="res://scripts/game.gd" id="1_iywne"]
+[ext_resource type="Texture2D" uid="uid://5qfd0257y8vk" path="res://sprites/Fundo1.png" id="1_uwrxv"]
+[ext_resource type="PackedScene" uid="uid://mu7x2ibdsbsq" path="res://scenes/player.tscn" id="2_yqjtg"]
+[ext_resource type="FontFile" uid="uid://bg1uhp404bh5s" path="res://fontes/BalooThambi2-ExtraBold.ttf" id="3_iywne"]
+[ext_resource type="PackedScene" uid="uid://bw833phprr80l" path="res://scenes/ball.tscn" id="3_lnu2h"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_iywne"]
+font = ExtResource("3_iywne")
+font_size = 250
+font_color = Color(0.45098, 0.00392157, 0.92549, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yqjtg"]
+size = Vector2(615, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lnu2h"]
+size = Vector2(35.5, 957)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lbhrr"]
+size = Vector2(615.5, 36)
+
+[sub_resource type="LabelSettings" id="LabelSettings_p57ef"]
+font = ExtResource("3_iywne")
+font_size = 38
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_iywne")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_uwrxv")
+centered = false
+
+[node name="Pongs" type="Label" parent="."]
+visible = false
+offset_right = 548.0
+offset_bottom = 952.0
+text = "0"
+label_settings = SubResource("LabelSettings_iywne")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Player" parent="." instance=ExtResource("2_yqjtg")]
+position = Vector2(270, 883)
+collision_mask = 6
+
+[node name="TopWall" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopWall"]
+position = Vector2(271.5, -23)
+shape = SubResource("RectangleShape2D_yqjtg")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+position = Vector2(-18.5, 481)
+shape = SubResource("RectangleShape2D_lnu2h")
+
+[node name="RigthWall" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigthWall"]
+position = Vector2(561.25, 480.5)
+shape = SubResource("RectangleShape2D_lnu2h")
+
+[node name="Hole" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hole"]
+position = Vector2(271.25, 978)
+shape = SubResource("RectangleShape2D_lbhrr")
+debug_color = Color(0.988235, 0, 0, 0.419608)
+
+[node name="Ball" parent="." instance=ExtResource("3_lnu2h")]
+z_index = 1
+position = Vector2(270, 840)
+collision_layer = 2
+collision_mask = 29
+
+[node name="Tutorial" type="Label" parent="."]
+offset_right = 551.0
+offset_bottom = 958.0
+text = "Press 'space' to start"
+label_settings = SubResource("LabelSettings_p57ef")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Positions" type="Node2D" parent="."]
+
+[node name="Pos_01" type="Marker2D" parent="Positions"]
+position = Vector2(-192, 151)
+
+[node name="Pos_02" type="Marker2D" parent="Positions"]
+position = Vector2(-193, 353)
+
+[node name="Pos_03" type="Marker2D" parent="Positions"]
+position = Vector2(719, 70)
+
+[node name="Pos_04" type="Marker2D" parent="Positions"]
+position = Vector2(721, 252)
+
+[node name="TimerSpawner" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[connection signal="body_entered" from="Hole" to="." method="_on_hole_body_entered"]
+[connection signal="timeout" from="TimerSpawner" to="." method="_on_timer_spawner_timeout"]
